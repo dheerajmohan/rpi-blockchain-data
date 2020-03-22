@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Raspberry Pi Data</title>
+
+    <!-- Bootstrap -->
+    <link href="vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+     <script type="text/javascript" src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function ()
+        {
+            GetData();
+	    GetData2();
+	    GetData3();
+	    setInterval();
+        });
+
+        function GetData()
+        {
+		
+            var url = 'https://api.thingspeak.com/channels/895509/feeds.json?api_key=5JIVLEMREOWTV5BT&results=2';
+            $.ajax
+            ({
+                url: url,
+                type: 'GET',
+                contentType: "application/json",
+                //dataType: "json",
+                //crossDomain: true,
+                success: function (data, textStatus, xhr) {
+                    $.each(data, function (i, item) {
+                        if (i == 'feeds') {
+                            var ubound = item.length;
+                            $('#newTask').val(item[ubound - 1].field1);
+                        }
+                    });
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                   // alert(errorThrown);
+                }
+            });
+
+            setTimeout(GetData, 10000);
+        }
+
+	setInterval(function() {
+        // console.log("hey")
+        var xmlhttp = new XMLHttpRequest();
+        var url = "http://192.168.43.19:8080/getValue";
+
+        xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // var clData = (this.responseText);
+            // // console.log(clData)
+            // console.log(clData.feeds[0].field1)
+            // var temp = clData.feeds[0].field1;
+            // document.getElementById("newTask").value = temp;
+		console.log((this.responseText))
+		this.responseText.replace(/&quot;/ig,'"');
+		
+		var myArr = JSON.parse(this.responseText);
+		console.log(myArr)
+		console.log((myArr['dec']))
+            console.log(typeof(this.responseText))
+           // temp=this.responseText[0]
+	     var r,i=0,prod=1,rem_mod=0;
+		var d=101, N=19*29, c=myArr['int'];
+   while (d>0)
+   {
+      r=d % 2;
+      if (i++==0)
+         rem_mod=c % N;
+      else{
+	
+          rem_mod=Math.pow(rem_mod,2) %N;
+	//rem_mod=rem_mod % N;
+	
+     }
+         
+      if (r==1)
+      {
+         prod*=rem_mod;
+         prod=prod % N;
+      }
+      d=parseInt(d/2);
+   }	
+console.log(prod)
+
+
+
+	
+            document.getElementById("newTask4").value = prod.toString()+"."+myArr['dec'];
+
+        }
+    };
+
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+
+    },3000)
+
+	function GetData2()
+        {
+		
+            var url = 'https://api.thingspeak.com/channels/897250/feeds.json?api_key=NRX4RFTX8982MPKM&results=2';
+            $.ajax
+            ({
+                url: url,
+                type: 'GET',
+                contentType: "application/json",
+                //dataType: "json",
+                //crossDomain: true,
+                success: function (data, textStatus, xhr) {
+                    $.each(data, function (i, item) {
+                        if (i == 'feeds') {
+                            var ubound = item.length;
+			    console.log("1"+data)
+                            $('#newTask2').val(item[ubound - 1].field1);
+                        }
+                    });
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                  //  alert(errorThrown);
+                }
+            });
+
+            setTimeout(GetData, 10000);
+        }
+
+	function GetData3()
+        {
+		
+            var url = 'https://api.thingspeak.com/channels/897260/feeds.json?api_key=6UDVKT1V3MQC6YZ4&results=2';
+            $.ajax
+            ({
+                url: url,
+                type: 'GET',
+                contentType: "application/json",
+                //dataType: "json",
+                //crossDomain: true,
+                success: function (data, textStatus, xhr) {
+                    $.each(data, function (i, item) {
+                        if (i == 'feeds') {
+                            var ubound = item.length;
+                            $('#newTask3').val(item[ubound - 1].field1);
+                        }
+                    });
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                  //  alert(errorThrown);
+                }
+            });
+
+            setTimeout(GetData, 10000);
+        }
+    </script>
+ <!--   <script type="text/javascript">
+    window.onload=function(){
+        var auto = setTimeout(function(){ autoRefresh(); }, 100);
+
+        function submitform(){
+          alert('test');
+          document.forms["sensordata"].submit();
+        }
+
+        function autoRefresh(){
+           clearTimeout(auto);
+           auto = setTimeout(function(){ submitform(); autoRefresh(); }, 10000);
+        }
+    }
+</script>
+-->
+
+    <style>
+      main {
+        margin-top: 60px;
+      }
+
+      #content {
+        display: none;
+      }
+
+      form {
+        width: 350px;
+        margin-bottom: 10px;
+      }
+
+      ul {
+        margin-bottom: 0px;
+      }
+
+      #completedTaskList .content {
+        color: grey;
+        text-decoration: line-through;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="http://www.dappuniversity.com/free-download" target="_blank">Raspberry Pi Data</a>
+      <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap d-none d-sm-none d-sm-block">
+          <small><a class="nav-link" href="#"><span id="account"></span></a></small>
+        </li>
+      </ul>
+    </nav>
+    <div class="container-fluid">
+      <div class="row">
+        <main role="main" class="col-lg-12 d-flex justify-content-center">
+          <div id="loader" class="text-center">
+            <p class="text-center">Loading...</p>
+          </div>
+          <div id="content">
+	<h4 align="center">Thingspeak cloud</h4>
+	<br>
+	<div class="row">
+	<div class="col-lg-6">
+		<h6>CPU Temperature</h5>
+	</div>
+	<div class="col-lg-6">
+	 <form onSubmit="App.createTask(); return false;" name="cpudata" target="_myFrame">
+              <input id="newTask" type="text" class="form-control" placeholder="Enter data" required>
+              <input type="submit" hidden="">
+            </form>
+	</div>
+	</div>
+
+	<div class="row">
+	<div class="col-lg-6">
+		<h6>Room Temperature</h5>
+	</div>
+	<div class="col-lg-6">
+         <form onSubmit="App.createTask(); return false;" name="temperaturedata" target="_myFrame">
+              <input id="newTask2" type="text" class="form-control" placeholder="Enter data" required>
+              <input type="submit" hidden="">
+            </form> 
+	</div>
+	</div>
+
+	<div class="row">
+	<div class="col-lg-6">
+		<h6>Distance</h5>
+	</div>
+	<div class="col-lg-6">
+	 <form onSubmit="App.createTask(); return false;" name="ultrasonicdata" target="_myFrame">
+              <input id="newTask3" type="text" class="form-control" placeholder="Enter data" required>
+              <input type="submit" hidden="">
+            </form>
+	</div>
+	</div>
+	<br><br><br>
+	<h4 align="center">Local network</h4>
+	<br>
+	<div class="row">
+	<div class="col-lg-6">
+		<h6>CPU Temperature</h5>
+	</div>
+	<div class="col-lg-6">
+	 <form onSubmit="App.createTask(); return false;" name="local networkdata" target="_myFrame">
+              <input id="newTask4" type="text" class="form-control" placeholder="Enter data" required>
+              <input type="submit" hidden="">
+            </form> 
+	</div>
+	</div>
+ 
+
+
+
+ 
+
+
+
+            <ul id="taskList" class="list-unstyled">
+              <div class="taskTemplate" class="checkbox" style="display: none">
+                <label>
+                  <input type="checkbox" />
+                  <span class="content">Task content goes here...</span>
+                </label>
+              </div>
+            </ul>
+            <ul id="completedTaskList" class="list-unstyled">
+            </ul>
+          </div>
+        </main>
+      </div>
+
+	<!--<div class = "row">
+	<main role="main" class="col-lg-4 d-flex justify-content-center>-->
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="vendor/truffle-contract/dist/truffle-contract.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
